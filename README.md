@@ -107,7 +107,7 @@ ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
 ----------------------------------------------------------------
--- ТАЙМЕР (С АНИМАЦИЕЙ ЦИФР)
+-- ТАЙМЕР (С РАБОТАЮЩЕЙ АНИМАЦИЕЙ ЦИФР)
 ----------------------------------------------------------------
 local TimerFrame = Instance.new("Frame")
 TimerFrame.Name = "TimerFrame"
@@ -133,7 +133,7 @@ TimerLabel.Text = "00:00:00"
 TimerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TimerLabel.TextSize = 22
 TimerLabel.Font = Enum.Font.GothamBold
-TimerLabel.TextScaled = true
+TimerLabel.TextScaled = false
 TimerLabel.TextWrapped = true
 
 local function updateTimer()
@@ -151,7 +151,7 @@ local function updateTimer()
         lastText = newText
         TimerLabel.Text = newText
         TweenService:Create(TimerLabel, TweenInfo.new(0.1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            TextSize = 28
+            TextSize = 30
         }):Play()
         task.wait(0.08)
         TweenService:Create(TimerLabel, TweenInfo.new(0.1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
@@ -178,7 +178,7 @@ local function stopTimer()
 end
 
 ----------------------------------------------------------------
--- КНОПКА-КВАДРАТ (БУКВА W КРУПНЕЕ + АНИМАЦИЯ)
+-- КНОПКА-КВАДРАТ
 ----------------------------------------------------------------
 local MenuButton = Instance.new("ImageButton")
 MenuButton.Name = "MenuButton"
@@ -301,7 +301,7 @@ task.spawn(function()
 end)
 
 ----------------------------------------------------------------
--- ГЛАВНОЕ МЕНЮ (420x360) — ПО ЦЕНТРУ
+-- ГЛАВНОЕ МЕНЮ (420x360)
 ----------------------------------------------------------------
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
@@ -665,4 +665,4 @@ if antiAfkEnabledState then
     end)
 end
 
-print("[good] Добавлена анимация пульсации цифр таймера.")
+print("[good] Анимация цифр работает (TextScaled выключен).")
