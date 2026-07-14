@@ -107,12 +107,12 @@ ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
 ----------------------------------------------------------------
--- ТАЙМЕР (С РАБОТАЮЩЕЙ АНИМАЦИЕЙ ЦИФР)
+-- ТАЙМЕР (размер 40)
 ----------------------------------------------------------------
 local TimerFrame = Instance.new("Frame")
 TimerFrame.Name = "TimerFrame"
 TimerFrame.Parent = ScreenGui
-TimerFrame.Size = UDim2.new(0, 180, 0, 50)
+TimerFrame.Size = UDim2.new(0, 180, 0, 55)
 TimerFrame.Position = UDim2.new(0.85, -90, 0.05, 0)
 TimerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 TimerFrame.BackgroundTransparency = 0.01
@@ -131,7 +131,7 @@ TimerLabel.Size = UDim2.new(1, 0, 1, 0)
 TimerLabel.BackgroundTransparency = 1
 TimerLabel.Text = "00:00:00"
 TimerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TimerLabel.TextSize = 22
+TimerLabel.TextSize = 40
 TimerLabel.Font = Enum.Font.GothamBold
 TimerLabel.TextScaled = false
 TimerLabel.TextWrapped = true
@@ -151,11 +151,11 @@ local function updateTimer()
         lastText = newText
         TimerLabel.Text = newText
         TweenService:Create(TimerLabel, TweenInfo.new(0.1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            TextSize = 30
+            TextSize = 44
         }):Play()
         task.wait(0.08)
         TweenService:Create(TimerLabel, TweenInfo.new(0.1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            TextSize = 22
+            TextSize = 40
         }):Play()
     end
 end
@@ -178,7 +178,7 @@ local function stopTimer()
 end
 
 ----------------------------------------------------------------
--- КНОПКА-КВАДРАТ
+-- КНОПКА-КВАДРАТ (без изменений)
 ----------------------------------------------------------------
 local MenuButton = Instance.new("ImageButton")
 MenuButton.Name = "MenuButton"
@@ -261,7 +261,7 @@ task.spawn(function()
 end)
 
 ----------------------------------------------------------------
--- БОЛЬШИЕ СНЕЖИНКИ (200 штук)
+-- БОЛЬШИЕ СНЕЖИНКИ (фон)
 ----------------------------------------------------------------
 local bigSnowContainer = Instance.new("Frame")
 bigSnowContainer.Name = "BigSnowContainer"
@@ -301,24 +301,49 @@ task.spawn(function()
 end)
 
 ----------------------------------------------------------------
--- ГЛАВНОЕ МЕНЮ (420x360)
+-- БЕЛАЯ РАМКА (обводка) И ГЛАВНОЕ МЕНЮ (возвращено к исходному расположению)
 ----------------------------------------------------------------
+local WhiteBorder = Instance.new("Frame")
+WhiteBorder.Name = "WhiteBorder"
+WhiteBorder.Parent = ScreenGui
+WhiteBorder.Size = UDim2.new(0, 424, 0, 364)   -- возвращаем исходную высоту
+WhiteBorder.Position = UDim2.new(0.5, -212, 0.5, -182)
+WhiteBorder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+WhiteBorder.BackgroundTransparency = 1
+WhiteBorder.Visible = false
+WhiteBorder.ZIndex = 9
+WhiteBorder.Active = true
+local BorderCorner = Instance.new("UICorner")
+BorderCorner.CornerRadius = UDim.new(0, 14)
+BorderCorner.Parent = WhiteBorder
+
+-- ЛИНИЯ (на Y = 55, как было изначально)
+local Line = Instance.new("Frame")
+Line.Name = "Line"
+Line.Parent = WhiteBorder
+Line.Size = UDim2.new(1, 0, 0, 1)
+Line.Position = UDim2.new(0, 0, 0, 55)   -- возвращаем Y=55
+Line.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Line.ZIndex = 13
+Line.BorderSizePixel = 0
+
+-- Основное чёрное меню
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 420, 0, 360)
-MainFrame.Position = UDim2.new(0.5, -210, 0.5, -180)
+MainFrame.Parent = WhiteBorder
+MainFrame.Size = UDim2.new(1, -4, 1, -4)
+MainFrame.Position = UDim2.new(0, 2, 0, 2)
 MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-MainFrame.Active = true
-MainFrame.Visible = false
 MainFrame.BackgroundTransparency = 1
+MainFrame.Active = true
 MainFrame.ZIndex = 10
-makeDraggable(MainFrame)
+makeDraggable(WhiteBorder)
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 12)
 MainCorner.Parent = MainFrame
 
+-- Заголовок
 local HeaderFrame = Instance.new("Frame")
 HeaderFrame.Name = "HeaderFrame"
 HeaderFrame.Parent = MainFrame
@@ -350,16 +375,8 @@ smallText.Font = Enum.Font.Gotham
 smallText.TextXAlignment = Enum.TextXAlignment.Center
 smallText.ZIndex = 12
 
-local Line = Instance.new("Frame")
-Line.Parent = MainFrame
-Line.Size = UDim2.new(0.9, 0, 0, 1)
-Line.Position = UDim2.new(0.05, 0, 0, 55)
-Line.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-Line.ZIndex = 13
-
+-- Кнопки (возвращаем исходные размеры и позиции)
 local buttonWidth = 400
-local startX = 0.5 - (buttonWidth / 2 / 420)
-
 local btnH = 45
 local gap = 5
 
@@ -367,7 +384,7 @@ local function createButton(text, yPos, bgColor, textColor)
     local btn = Instance.new("TextButton")
     btn.Parent = MainFrame
     btn.Size = UDim2.new(0, buttonWidth, 0, btnH)
-    btn.Position = UDim2.new(startX, 0, 0, yPos)
+    btn.Position = UDim2.new(0.5, -buttonWidth/2, 0, yPos)
     btn.BackgroundColor3 = bgColor
     btn.Text = text
     btn.TextColor3 = textColor
@@ -381,17 +398,18 @@ local function createButton(text, yPos, bgColor, textColor)
     return btn
 end
 
-local ToggleButton = createButton("AUTO FARM: OFF", 62, Color3.fromRGB(80, 80, 80), Color3.fromRGB(255, 255, 255))
-local AntiAfkButton = createButton("ANTI AFK: OFF", 62 + btnH + gap, Color3.fromRGB(80, 80, 80), Color3.fromRGB(255, 255, 255))
-local BindButton = createButton("BIND: " .. tostring(bindKey):gsub("Enum.KeyCode.", "") .. " (click to change it)", 62 + (btnH + gap) * 2, Color3.fromRGB(80, 80, 80), Color3.fromRGB(255, 255, 255))
-local TimerToggleButton = createButton("TIMER FARM: OFF", 62 + (btnH + gap) * 3, Color3.fromRGB(80, 80, 80), Color3.fromRGB(255, 255, 255))
-local TeleportButton = createButton("TREADMILL FARM", 62 + (btnH + gap) * 4, Color3.fromRGB(80, 80, 80), Color3.fromRGB(255, 255, 255))
+-- Позиции как в первом коде
+local ToggleButton = createButton("AUTO FARM: OFF", 62, Color3.fromRGB(80,80,80), Color3.fromRGB(255,255,255))
+local AntiAfkButton = createButton("ANTI AFK: OFF", 62 + btnH + gap, Color3.fromRGB(80,80,80), Color3.fromRGB(255,255,255))
+local TimerToggleButton = createButton("TIMER FARM: OFF", 62 + (btnH + gap)*2, Color3.fromRGB(80,80,80), Color3.fromRGB(255,255,255))
+local TeleportButton = createButton("TREADMILL FARM", 62 + (btnH + gap)*3, Color3.fromRGB(80,80,80), Color3.fromRGB(255,255,255))
 
+-- TrackSelectButton (высота 43, как было)
 local TrackSelectButton = Instance.new("TextButton")
 TrackSelectButton.Name = "TrackSelectButton"
 TrackSelectButton.Parent = MainFrame
-TrackSelectButton.Size = UDim2.new(0, buttonWidth, 0, btnH - 2)
-TrackSelectButton.Position = UDim2.new(startX, 0, 0, 62 + (btnH + gap) * 5)
+TrackSelectButton.Size = UDim2.new(0, buttonWidth, 0, 43)
+TrackSelectButton.Position = UDim2.new(0.5, -buttonWidth/2, 0, 62 + (btnH + gap)*4)
 TrackSelectButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 TrackSelectButton.Text = "TREADMILL: " .. selectedTrack
 TrackSelectButton.TextColor3 = Color3.fromRGB(120, 120, 120)
@@ -403,6 +421,10 @@ local TrackCorner = Instance.new("UICorner")
 TrackCorner.CornerRadius = UDim.new(0, 6)
 TrackCorner.Parent = TrackSelectButton
 
+-- BindButton (последняя, на Y = 62 + (btnH + gap)*5)
+local BindButton = createButton("BIND: " .. tostring(bindKey):gsub("Enum.KeyCode.", "") .. " (click to change it)", 62 + (btnH + gap)*5, Color3.fromRGB(80,80,80), Color3.fromRGB(255,255,255))
+
+-- Восстановление состояний
 if farmEnabledState then
     ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     ToggleButton.TextColor3 = Color3.fromRGB(120, 120, 120)
@@ -427,7 +449,7 @@ for _, child in ipairs(MainFrame:GetChildren()) do
 end
 
 ----------------------------------------------------------------
--- АНИМАЦИЯ МЕНЮ
+-- АНИМАЦИЯ МЕНЮ (с учётом WhiteBorder)
 ----------------------------------------------------------------
 local function animateMenu(open)
     if open then
@@ -447,20 +469,22 @@ local function animateMenu(open)
         }):Play()
         
         bigSnowContainer.Visible = true
-        MainFrame.Visible = true
+        WhiteBorder.Visible = true
+        WhiteBorder.BackgroundTransparency = 1
+        WhiteBorder.Size = UDim2.new(0, 0, 0, 0)
+        WhiteBorder.Position = UDim2.new(0.5, 0, 0.5, 0)
         MainFrame.BackgroundTransparency = 1
-        MainFrame.Size = UDim2.new(0, 0, 0, 0)
-        MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
         for _, child in ipairs(childElements) do
             child.Visible = false
         end
-        local tween1 = TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Position = UDim2.new(0.5, -210, 0.5, -180),
-            Size = UDim2.new(0, 420, 0, 360),
+        local tween1 = TweenService:Create(WhiteBorder, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+            Position = UDim2.new(0.5, -212, 0.5, -182),
+            Size = UDim2.new(0, 424, 0, 364),
             BackgroundTransparency = 0
         })
         tween1:Play()
         tween1.Completed:Wait()
+        MainFrame.BackgroundTransparency = 0
         for _, child in ipairs(childElements) do
             child.Visible = true
         end
@@ -469,17 +493,18 @@ local function animateMenu(open)
         for _, child in ipairs(childElements) do
             child.Visible = false
         end
-        local tween1 = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        local tween1 = TweenService:Create(WhiteBorder, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
             Position = UDim2.new(0.5, 0, 0.5, 0),
             Size = UDim2.new(0, 0, 0, 0),
             BackgroundTransparency = 1
         })
         tween1:Play()
         tween1.Completed:Wait()
-        MainFrame.Visible = false
-        MainFrame.Size = UDim2.new(0, 420, 0, 360)
+        WhiteBorder.Visible = false
+        WhiteBorder.Size = UDim2.new(0, 424, 0, 364)
+        WhiteBorder.BackgroundTransparency = 0
+        WhiteBorder.Position = UDim2.new(0.5, -212, 0.5, -182)
         MainFrame.BackgroundTransparency = 0
-        MainFrame.Position = UDim2.new(0.5, -210, 0.5, -180)
     end
 end
 
@@ -489,17 +514,17 @@ MenuButton.MouseButton1Click:Connect(function()
 end)
 
 ----------------------------------------------------------------
--- БИНД
+-- БИНД (РАБОТАЕТ НА ЛЮБУЮ КЛАВИШУ, ВКЛЮЧАЯ ПРАВЫЙ SHIFT)
 ----------------------------------------------------------------
 local listeningForBind = false
 
 local function toggleMenuByBind()
     menuVisible = not menuVisible
     animateMenu(menuVisible)
+    print("[good] Меню переключено через бинд, состояние:", menuVisible)
 end
 
 local bindConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
     if listeningForBind then
         if input.UserInputType == Enum.UserInputType.Keyboard then
             bindKey = input.KeyCode
@@ -508,9 +533,11 @@ local bindConnection = UserInputService.InputBegan:Connect(function(input, gameP
             BindButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
             settings.bindKey = tostring(bindKey)
             saveSettings(settings)
+            print("[good] Новая клавиша бинда:", bindKey)
         end
         return
     end
+    
     if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == bindKey then
         toggleMenuByBind()
     end
@@ -520,10 +547,11 @@ BindButton.MouseButton1Click:Connect(function()
     listeningForBind = true
     BindButton.BackgroundColor3 = Color3.fromRGB(200, 100, 50)
     BindButton.Text = "PRESS ANY KEY..."
+    print("[good] Режим ожидания клавиши активирован")
 end)
 
 ----------------------------------------------------------------
--- ТАЙМЕР ВКЛ/ВЫКЛ
+-- ОСТАЛЬНЫЕ ФУНКЦИИ (таймер, телепорт, автофарм, анти-афк)
 ----------------------------------------------------------------
 TimerToggleButton.MouseButton1Click:Connect(function()
     timerVisible = not timerVisible
@@ -541,9 +569,6 @@ TimerToggleButton.MouseButton1Click:Connect(function()
     end
 end)
 
-----------------------------------------------------------------
--- ТЕЛЕПОРТ
-----------------------------------------------------------------
 local function teleportToTrack(trackName)
     local targetPos = tracks[trackName]
     if not targetPos then return end
@@ -577,9 +602,6 @@ TrackSelectButton.MouseButton1Click:Connect(function()
     saveSettings(settings)
 end)
 
-----------------------------------------------------------------
--- АВТО ФАРМ
-----------------------------------------------------------------
 local function startFarm()
     while farmEnabled do
         local character = player.Character
@@ -665,4 +687,4 @@ if antiAfkEnabledState then
     end)
 end
 
-print("[good] Анимация цифр работает (TextScaled выключен).")
+print("[good] Интерфейс меню возвращён к исходному виду (линия на 55, кнопки на своих местах). Таймер 40, бинд на любую клавишу работает.")
